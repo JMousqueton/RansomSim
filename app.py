@@ -822,7 +822,16 @@ def delete_chat(victim_id):
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     """Serve uploaded files"""
-    return send_file(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    # Sanitize the filename and ensure it stays within the upload folder
+    safe_name = secure_filename(filename)
+    upload_folder = app.config['UPLOAD_FOLDER']
+    fullpath = os.path.normpath(os.path.join(upload_folder, safe_name))
+    # Ensure the normalized path is within the configured upload folder
+    if os.path.commonpath([os.path.abspath(upload_folder), os.path.abspath(fullpath)]) != os.path.abspath(upload_folder):
+        # Do not reveal whether the file exists; just return 404
+        from flask import abort
+        return abort(404)
+    return send_file(fullpath)
 
 @app.route('/screenshot/<screenshot_type>/<language>.svg')
 def get_screenshot(screenshot_type, language='UK'):
