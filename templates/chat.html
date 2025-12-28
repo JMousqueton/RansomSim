@@ -74,6 +74,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const messageInput = document.getElementById('messageInput');
     const chatMessages = document.getElementById('chatMessages');
     
+    // Function to convert URLs in text to clickable links
+    function linkify(text) {
+        const urlRegex = /(https?:\/\/[^\s]+)/g;
+        return text.replace(urlRegex, function(url) {
+            return '<a href="' + url + '" target="_blank" class="text-warning text-decoration-underline"><i class="fas fa-external-link-alt"></i> ' + url + '</a>';
+        });
+    }
+    
     // Scroll to bottom on load
     chatMessages.scrollTop = chatMessages.scrollHeight;
     
@@ -123,12 +131,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     const isVictim = msg.sender === 'victim';
                     const messageDiv = document.createElement('div');
                     messageDiv.className = `message mb-3 ${isVictim ? 'text-end' : ''}`;
+                    
+                    // Convert URLs to clickable links
+                    const messageText = linkify(msg.message);
+                    
                     messageDiv.innerHTML = `
                         <div class="d-inline-block p-2 rounded ${isVictim ? 'bg-primary text-white' : 'bg-secondary text-white'}" style="max-width: 70%;">
                             <small class="d-block fw-bold">
                                 ${isVictim ? '<i class="fas fa-user"></i> You' : '<i class="fas fa-user-secret"></i> Support'}
                             </small>
-                            <div>${msg.message}</div>
+                            <div>${messageText}</div>
                             <small class="d-block text-white-50 mt-1" style="font-size: 0.7rem;">${msg.created_at}</small>
                         </div>
                     `;

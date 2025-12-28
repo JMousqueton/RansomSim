@@ -49,12 +49,15 @@
                 </div>
 
                 <form id="chatForm">
-                    <div class="input-group">
+                    <div class="input-group mb-2">
                         <input type="text" class="form-control" id="messageInput" placeholder="Type your response as ransomware gang support..." required>
                         <button type="submit" class="btn btn-danger">
                             <i class="fas fa-paper-plane"></i> Send
                         </button>
                     </div>
+                    <button type="button" class="btn btn-sm btn-warning" id="insertNewsLink">
+                        <i class="fas fa-newspaper"></i> Insert News Article Link
+                    </button>
                 </form>
 
                 <div class="alert alert-warning mt-3">
@@ -72,6 +75,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const chatForm = document.getElementById('chatForm');
     const messageInput = document.getElementById('messageInput');
     const chatMessages = document.getElementById('chatMessages');
+    const insertNewsBtn = document.getElementById('insertNewsLink');
+    
+    // Insert news link into message input
+    insertNewsBtn.addEventListener('click', function() {
+        const newsLink = window.location.origin + '/_news/{{ victim_id }}';
+        const currentMessage = messageInput.value;
+        
+        if (currentMessage) {
+            messageInput.value = currentMessage + ' ' + newsLink;
+        } else {
+            messageInput.value = 'Your breach has been reported in the media: ' + newsLink;
+        }
+        
+        messageInput.focus();
+    });
     
     // Scroll to bottom on load
     chatMessages.scrollTop = chatMessages.scrollHeight;

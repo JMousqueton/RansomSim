@@ -173,6 +173,65 @@
 
         <hr>
 
+        <!-- Fake News/Media Coverage Section -->
+        <div class="mb-4">
+            <h3 class="mb-3">
+                <i class="fas fa-newspaper"></i> Media Coverage
+            </h3>
+            <p class="text-muted small mb-3">
+                <i class="fas fa-info-circle"></i> Select news articles covering this breach from various cybersecurity and tech publications.
+            </p>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100 shadow-sm border-danger">
+                        <div class="card-body">
+                            <h6 class="card-title text-danger">
+                                <i class="fas fa-newspaper"></i> Breaking News Report
+                            </h6>
+                            <p class="card-text small text-muted">
+                                Latest updates on the {{ post.name }} data breach and ransom demands.
+                            </p>
+                            <a href="/_news/{{ post.id }}" target="_blank" class="btn btn-sm btn-danger">
+                                <i class="fas fa-external-link-alt"></i> Read Article
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100 shadow-sm border-warning">
+                        <div class="card-body">
+                            <h6 class="card-title text-warning">
+                                <i class="fas fa-shield-alt"></i> Threat Analysis
+                            </h6>
+                            <p class="card-text small text-muted">
+                                Security experts assess the severity and implications of this attack.
+                            </p>
+                            <a href="/_news/{{ post.id }}" target="_blank" class="btn btn-sm btn-warning">
+                                <i class="fas fa-external-link-alt"></i> Read Article
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100 shadow-sm border-info">
+                        <div class="card-body">
+                            <h6 class="card-title text-info">
+                                <i class="fas fa-chart-line"></i> Industry Impact
+                            </h6>
+                            <p class="card-text small text-muted">
+                                Analysis of how this breach affects the {{ post.sector }} sector.
+                            </p>
+                            <a href="/_news/{{ post.id }}" target="_blank" class="btn btn-sm btn-info">
+                                <i class="fas fa-external-link-alt"></i> Read Article
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
         <div class="d-grid gap-2 d-md-flex justify-content-md-start">
             <a href="{{ url_for('index') }}" class="btn btn-secondary">
                 <i class="fas fa-arrow-left"></i> Back to Posts

@@ -62,6 +62,15 @@ A Python3 web application for creating simulated ransomware data leak site posts
   - Configurable per-victim enable/disable
   - Realistic gang negotiation dialogue
   - Customizable reply delay (2-10 seconds by default)
+- **Fake News/Media Coverage**: Realistic simulated news articles about breaches
+  - Auto-generated news articles with industry-specific impact assessments
+  - **Multi-language support**: Articles generated in English, French, and German
+  - Multiple fake news publications and journalist bylines per language
+  - Expert quotes and threat analysis localized by language
+  - Professional standalone news page design (no site navigation)
+  - Accessible via `/_news/<victim_id>` route
+  - Clickable links in victim chat interface (open in new tab)
+  - Admin quick-insert button for news links in chat
 - **Random IDs**: 16-character alphanumeric unique identifiers
 - **Database Storage**: SQLite database for post and message persistence
 - **Responsive Design**: Bootstrap 5 with FontAwesome icons
@@ -85,14 +94,18 @@ RansomSim/
 │   ├── login.html        # Admin login page
 │   ├── admin.html        # Admin dashboard
 │   ├── admin_chat.html   # Admin chat management
+│   ├── admin_chat_detail.html  # Admin chat conversation
 │   ├── chat_login.html   # Victim chat login page
 │   ├── chat.html         # Victim chat interface
+│   ├── news.html         # Fake news article page
 │   └── 404.html          # 404 error page
 ├── static/               # Static assets
 │   ├── css/
 │   │   └── style.css     # Custom CSS styling
 │   └── js/
 │       └── main.js       # JavaScript utilities
+├── scripts/              # Utility scripts
+│   └── seed.py           # Bulk victim data seeder
 └── uploads/              # Uploaded logo images
 ```
 
@@ -246,6 +259,47 @@ When enabled, the gang automatically replies to victim messages based on negotia
 - Admin can override with manual messages anytime
 - All auto-responses stored in chat history
 
+### Fake News/Media Coverage
+Adds immersive realism to the simulation by generating realistic news articles about breaches:
+
+**Features:**
+- Dynamically generated news articles based on victim data
+- **Multi-language support**: English (UK), French (FR), German (DE)
+- Multiple fake news publications per language:
+  - English: TechNews Daily, CyberSecure Weekly, Data Breach Report, etc.
+  - French: TechNews Quotidien, Cybersécurité Hebdo, etc.
+  - German: TechNews Täglich, Cybersicherheit Wöchentlich, etc.
+- Realistic journalist bylines and dates in each language
+- Industry-specific impact assessments translated for each language
+- Expert quotes from fake cybersecurity analysts in victim's language
+- Sector-specific threat details and regulatory implications
+- Professional standalone news page design with:
+  - Gradient backgrounds and modern typography
+  - FontAwesome icons throughout
+  - Animated elements and hover effects
+  - Responsive mobile-first layout
+  - No site navigation (clean news portal experience)
+- Related articles section in appropriate language
+- Clickable URLs in chat messages (auto-detected and linked)
+
+**Accessed Via:**
+- `/post/<victim_id>` - Three news link cards appear in "Media Coverage" section
+- `/_news/<victim_id>` - Direct access to full article (auto-detects victim's language)
+- Admin chat: "Insert News Article Link" button to quickly add link to messages
+- Victim chat: URLs automatically become clickable links with `target="_blank"`
+
+**Impact Details by Sector:**
+- Healthcare: HIPAA violations, patient privacy concerns
+- Finance: SEC investigations, investor losses
+- Manufacturing: Supply chain disruption
+- Retail: PCI DSS violations, credit card fraud
+- Technology: IP theft, competitive disadvantage
+- Education: FERPA violations, student records
+- Government: National security implications
+- Energy: Critical infrastructure exposure
+- Telecommunications: Network security weaknesses
+- Transportation: Logistics and safety concerns
+
 ## API Endpoints
 
 ### Public Routes
@@ -271,6 +325,7 @@ When enabled, the gang automatically replies to victim messages based on negotia
 - `GET /admin/chat/<victim_id>` - Admin chat with specific victim
 - `POST /admin/chat/<victim_id>/send` - Admin send message
 - `POST /admin/chat/<victim_id>/delete` - Delete chat conversation
+- `GET /_news/<victim_id>` - View fake news article about victim breach
 
 ## Database Schema
 

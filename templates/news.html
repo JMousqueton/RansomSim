@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ headline }} - RansomSim News</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e8ba3 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, rgba(30, 60, 114, 0.95) 0%, rgba(42, 82, 152, 0.95) 100%);
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 3rem;
+            text-align: center;
+            border-bottom: 4px solid #dc3545;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+
+        header .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        header h2 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        header .badge-news {
+            display: inline-block;
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+        }
+
+        header p {
+            margin: 0.8rem 0 0 0;
+            font-size: 1.1rem;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+
+        /* Back Button */
+        .back-button {
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+
+        .back-button .btn {
+            background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+            border: none;
+            padding: 0.6rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .back-button .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, #5a6268 0%, #495057 100%);
+            color: white;
+        }
+
+        /* Article Styles */
+        .news-article {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            border-left: 6px solid #dc3545;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            padding: 3rem;
+            line-height: 1.8;
+        }
+
+        .news-article:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        .news-header {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .news-header .publication {
+            color: #dc3545;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .news-header .date {
+            color: #6c757d;
+            font-size: 0.95rem;
+        }
+
+        .news-header .author {
+            color: #495057;
+            font-size: 0.95rem;
+            margin-top: 0.5rem;
+        }
+
+        .news-headline {
+            font-size: 2.8rem;
+            line-height: 1.2;
+            color: #1a1a1a;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .lead-summary {
+            font-size: 1.3rem;
+            color: #495057;
+            font-style: italic;
+            margin-bottom: 2rem;
+            padding-left: 1.5rem;
+            border-left: 4px solid #dc3545;
+        }
+
+        /* Image Styles */
+        .news-image {
+            margin-bottom: 2.5rem;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .placeholder-image {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 350px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .placeholder-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M0 0h40v40H0z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            animation: drift 3s ease-in-out infinite;
+        }
+
+        @keyframes drift {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(10px, 10px); }
+        }
+
+        .image-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            color: white;
+        }
+
+        .image-content i {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .image-content p {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .image-credit {
+            text-align: center;
+            color: #6c757d;
+            font-size: 0.85rem;
+            margin-top: 0.8rem;
+        }
+
+        /* Body Text */
+        .news-body {
+            margin-bottom: 2rem;
+        }
+
+        .news-body p {
+            margin-bottom: 1.5rem;
+            color: #2c3e50;
+            font-size: 1.05rem;
+            text-align: justify;
+        }
+
+        /* Alert Boxes */
+        .alert-custom {
+            border: none;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .alert-warning-custom {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffe8a1 100%);
+            border-left: 5px solid #ffc107;
+        }
+
+        .alert-warning-custom h5 {
+            color: #856404;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .alert-warning-custom p {
+            color: #856404;
+            margin: 0;
+        }
+
+        .alert-info-custom {
+            background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+            border-left: 5px solid #17a2b8;
+        }
+
+        .alert-info-custom h5 {
+            color: #0c5460;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .alert-info-custom ul {
+            color: #0c5460;
+            margin: 0;
+        }
+
+        .alert-info-custom ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Blockquote */
+        .quote-box {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-left: 5px solid #dc3545;
+            padding: 2rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+            font-style: italic;
+            position: relative;
+        }
+
+        .quote-box::before {
+            content: '\201c';
+            font-size: 4rem;
+            color: #dc3545;
+            position: absolute;
+            top: 0;
+            left: 1rem;
+            opacity: 0.3;
+        }
+
+        .quote-text {
+            color: #495057;
+            font-size: 1.15rem;
+            margin-bottom: 1rem;
+            margin-left: 0;
+        }
+
+        .quote-author {
+            color: #6c757d;
+            font-size: 0.95rem;
+            font-style: normal;
+            font-weight: 600;
+        }
+
+        /* Footer */
+        .news-footer {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e9ecef;
+            background: linear-gradient(135deg, rgba(248, 249, 250, 0.5) 0%, rgba(233, 236, 239, 0.5) 100%);
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+
+        .news-footer p {
+            margin-bottom: 0.5rem;
+            color: #6c757d;
+            font-size: 0.95rem;
+        }
+
+        .news-footer strong {
+            color: #495057;
+        }
+
+        .news-footer .badge {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            margin-right: 0.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Related News */
+        .related-section {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px dashed #dc3545;
+        }
+
+        .related-section h4 {
+            color: #1a1a1a;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .related-item {
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .related-item:hover {
+            border-color: #dc3545;
+            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.15);
+            transform: translateX(5px);
+        }
+
+        .related-item h6 {
+            color: #1a1a1a;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .related-item .publication {
+            color: #dc3545;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .related-item p {
+            color: #6c757d;
+            font-size: 0.95rem;
+            margin: 0.5rem 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .news-headline {
+                font-size: 2rem;
+            }
+
+            header h2 {
+                font-size: 1.8rem;
+            }
+
+            .news-article {
+                padding: 1.5rem;
+            }
+
+            .placeholder-image {
+                min-height: 250px;
+            }
+
+            .image-content i {
+                font-size: 3.5rem;
+            }
+
+            .quote-box {
+                padding: 1.5rem;
+            }
+
+            .quote-box::before {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="mb-3">
+                <i class="fas fa-newspaper" style="font-size: 2rem;"></i>
+            </div>
+            <h2><i class="fas fa-shield-alt"></i> RansomSim Security News</h2>
+            <p><i class="fas fa-globe"></i> Threat Intelligence & Media Coverage Portal</p>
+            <div class="badge-news">
+                <i class="fas fa-bell"></i> Breaking News
+            </div>
+        </div>
+    </header>
+
+    <div class="container" style="margin-bottom: 4rem;">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- News Article Container -->
+                <article class="news-article">
+                    
+                    <!-- Publication Header -->
+                    <div class="news-header">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <div class="publication">
+                                    <i class="fas fa-bookmark"></i> {{ publication }}
+                                </div>
+                                <div class="author">
+                                    <i class="fas fa-user-edit"></i> By {{ author }}
+                                </div>
+                            </div>
+                            <div class="date">
+                                <i class="fas fa-calendar-alt"></i> {{ date }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Headline -->
+                    <h1 class="news-headline">
+                        <i class="fas fa-exclamation-circle text-danger"></i>
+                        {{ headline }}
+                    </h1>
+
+                    <!-- Summary/Lead -->
+                    <p class="lead-summary">
+                        <i class="fas fa-quote-left"></i>
+                        {{ summary }}
+                    </p>
+
+                    <!-- Featured Image -->
+                    <div class="news-image">
+                        <div class="placeholder-image">
+                            <div class="image-content">
+                                <i class="fas fa-lock"></i>
+                                <p>{{ victim_name }}</p>
+                                <small style="opacity: 0.8;"><i class="fas fa-exclamation-triangle"></i> Data Breach</small>
+                            </div>
+                        </div>
+                        <div class="image-credit">
+                            <i class="fas fa-info-circle"></i> Illustration: {{ victim_name }} affected by ransomware attack
+                        </div>
+                    </div>
+
+                    <!-- Article Body -->
+                    <div class="news-body">
+                        {% for paragraph in body %}
+                        <p><i class="fas fa-paragraph" style="color: #dc3545; margin-right: 0.5rem;"></i>{{ paragraph }}</p>
+                        {% endfor %}
+
+                        <!-- Impact Box -->
+                        <div class="alert-custom alert-warning-custom">
+                            <h5>
+                                <i class="fas fa-exclamation-triangle"></i> Potential Impact
+                            </h5>
+                            <p>{{ impact }}</p>
+                        </div>
+
+                        <!-- Quote from Expert -->
+                        <div class="quote-box">
+                            <p class="quote-text">
+                                {{ quote }}
+                            </p>
+                            <div class="quote-author">
+                                <i class="fas fa-user-tie"></i> {{ quote_author }}
+                                <br>
+                                <small><i class="fas fa-file-alt"></i> {{ quote_source }}</small>
+                            </div>
+                        </div>
+
+                        <!-- Recommendation Box -->
+                        <div class="alert-custom alert-info-custom">
+                            <h5>
+                                <i class="fas fa-shield-alt"></i> Recommended Actions
+                            </h5>
+                            <ul>
+                                <li><i class="fas fa-check-circle"></i> Engage with specialized incident response teams</li>
+                                <li><i class="fas fa-check-circle"></i> Assess the scope and nature of the data breach</li>
+                                <li><i class="fas fa-check-circle"></i> Notify affected stakeholders and regulatory bodies as required</li>
+                                <li><i class="fas fa-check-circle"></i> Document all communications and timelines</li>
+                            </ul>
+                        </div>
+
+                        <p>
+                            <i class="fas fa-file-contract" style="color: #dc3545; margin-right: 0.5rem;"></i>
+                            <strong>Closing Statement:</strong> {{ closing }}
+                        </p>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="news-footer">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong><i class="fas fa-calendar-check"></i> Published:</strong> {{ date }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong><i class="fas fa-tags"></i> Categories:</strong></p>
+                                <div>
+                                    <span class="badge bg-danger"><i class="fas fa-lock"></i> Security</span>
+                                    <span class="badge bg-dark"><i class="fas fa-database"></i> Data Breach</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p style="margin-top: 1rem; margin-bottom: 0;"><strong><i class="fas fa-key"></i> Keywords:</strong> {{ victim_name }}, ransomware, data breach, cybersecurity, threat intelligence</p>
+                    </div>
+
+                </article>
+
+                <!-- Related News -->
+                {% if related_news %}
+                <div class="related-section">
+                    <h4>
+                        <i class="fas fa-newspaper"></i> Related Articles
+                    </h4>
+                    <div class="row">
+                        {% for article in related_news %}
+                        <div class="col-md-6 mb-3">
+                            <a href="{{ article.url }}" target="_blank" class="text-decoration-none">
+                                <div class="related-item h-100">
+                                    <div class="publication">
+                                        <i class="fas fa-rss"></i> {{ article.publication }}
+                                    </div>
+                                    <h6 class="mt-2">
+                                        <i class="fas fa-link"></i> {{ article.title }}
+                                    </h6>
+                                    <p>{{ article.excerpt }}</p>
+                                    <small class="text-muted">
+                                        <i class="fas fa-external-link-alt"></i> Read More
+                                    </small>
+                                </div>
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
