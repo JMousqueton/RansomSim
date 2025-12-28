@@ -5,10 +5,15 @@ import string
 from datetime import datetime
 from flask import Flask, render_template, request, jsonify, redirect, url_for, session, flash, send_file
 from werkzeug.utils import secure_filename
+import logging
 
 # Load environment variables from .env file
 from dotenv import load_dotenv
 load_dotenv()
+
+# Configure basic logging if not configured elsewhere
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # ============================================================================
 # GENERATOR FUNCTIONS AND CLASSES
@@ -422,7 +427,8 @@ def generate():
                 'redirect': url_for('admin')
             })
         except Exception as e:
-            return jsonify({'error': str(e)}), 500
+            logger.exception("Error while generating ransomware leak site post")
+            return jsonify({'error': 'An internal error has occurred.'}), 500
     
     return render_template('generate.html')
 
