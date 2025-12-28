@@ -2,6 +2,8 @@ import os
 import sqlite3
 import random
 import string
+import threading
+import time
 from datetime import datetime
 from flask import Flask, render_template, request, jsonify, redirect, url_for, session, flash, send_file
 from werkzeug.utils import secure_filename
@@ -223,7 +225,16 @@ def init_db():
                   sector TEXT,
                   ransom_amount TEXT,
                   deadline_date TEXT,
+                  auto_respond TEXT DEFAULT '1',
                   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''')
+    
+    # Add auto_respond column if it doesn't exist (migration for existing databases)
+    try:
+        c.execute('ALTER TABLE posts ADD COLUMN auto_respond TEXT DEFAULT "1"')
+    except sqlite3.OperationalError:
+        # Column already exists, no action needed
+        pass
+    
     conn.commit()
     conn.close()
 
@@ -293,13 +304,13 @@ def get_db_posts():
     conn.close()
     return posts
 
-def save_post(post_id, name, logo_path, description, language, document_names, file_names, sector=None, ransom_amount=None, deadline_date=None):
+def save_post(post_id, name, logo_path, description, language, document_names, file_names, sector=None, ransom_amount=None, deadline_date=None, auto_respond='1'):
     """Save post to database"""
     conn = sqlite3.connect('ransomsim.db')
     c = conn.cursor()
-    c.execute('''INSERT INTO posts (id, name, logo_path, description, language, document_names, file_names, sector, ransom_amount, deadline_date)
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
-              (post_id, name, logo_path, description, language, ','.join(document_names), ','.join(file_names), sector, ransom_amount, deadline_date))
+    c.execute('''INSERT INTO posts (id, name, logo_path, description, language, document_names, file_names, sector, ransom_amount, deadline_date, auto_respond)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+              (post_id, name, logo_path, description, language, ','.join(document_names), ','.join(file_names), sector, ransom_amount, deadline_date, auto_respond))
     conn.commit()
     conn.close()
 
@@ -311,20 +322,20 @@ def delete_post(post_id):
     conn.commit()
     conn.close()
 
-def update_post(post_id, name, description, language, sector, ransom_amount, deadline_date, logo_path=None):
+def update_post(post_id, name, description, language, sector, ransom_amount, deadline_date, auto_respond='1', logo_path=None):
     """Update post in database"""
     conn = sqlite3.connect('ransomsim.db')
     c = conn.cursor()
     if logo_path is not None:
         c.execute('''UPDATE posts 
-                     SET name = ?, description = ?, language = ?, sector = ?, ransom_amount = ?, deadline_date = ?, logo_path = ?
+                     SET name = ?, description = ?, language = ?, sector = ?, ransom_amount = ?, deadline_date = ?, auto_respond = ?, logo_path = ?
                      WHERE id = ?''',
-                  (name, description, language, sector, ransom_amount, deadline_date, logo_path, post_id))
+                  (name, description, language, sector, ransom_amount, deadline_date, auto_respond, logo_path, post_id))
     else:
         c.execute('''UPDATE posts 
-                     SET name = ?, description = ?, language = ?, sector = ?, ransom_amount = ?, deadline_date = ?
+                     SET name = ?, description = ?, language = ?, sector = ?, ransom_amount = ?, deadline_date = ?, auto_respond = ?
                      WHERE id = ?''',
-                  (name, description, language, sector, ransom_amount, deadline_date, post_id))
+                  (name, description, language, sector, ransom_amount, deadline_date, auto_respond, post_id))
     conn.commit()
     conn.close()
 
@@ -388,6 +399,7 @@ def generate():
             deadline_date = request.form.get('deadline_date', '')
             sector = request.form.get('sector', '')
             ransom_amount = request.form.get('ransom_amount', '')
+            auto_respond = '1' if request.form.get('auto_respond') else '0'
             
             # Validate inputs
             if not name:
@@ -419,7 +431,7 @@ def generate():
                 file_names.append(file_gen.generate(random.choice(extensions)))
             
             # Save to database
-            save_post(post_id, name, logo_path, description, language, document_names, file_names, sector if sector else None, ransom_amount if ransom_amount else None, deadline_date if deadline_date else None)
+            save_post(post_id, name, logo_path, description, language, document_names, file_names, sector if sector else None, ransom_amount if ransom_amount else None, deadline_date if deadline_date else None, auto_respond)
             
             return jsonify({
                 'success': True,
@@ -457,6 +469,7 @@ def edit(post_id):
         deadline_date = request.form.get('deadline_date', '')
         sector = request.form.get('sector', '')
         ransom_amount = request.form.get('ransom_amount', '')
+        auto_respond = '1' if request.form.get('auto_respond') else '0'
         logo_file = request.files.get('logo')
         
         if not name:
@@ -472,7 +485,7 @@ def edit(post_id):
             logo_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             logo_path = f"/uploads/{filename}"
         
-        update_post(post_id, name, description, language, sector if sector else None, ransom_amount if ransom_amount else None, deadline_date if deadline_date else None, logo_path)
+        update_post(post_id, name, description, language, sector if sector else None, ransom_amount if ransom_amount else None, deadline_date if deadline_date else None, auto_respond, logo_path)
         flash('Post updated successfully', 'success')
         return redirect(url_for('admin'))
     
@@ -663,6 +676,25 @@ def send_message(victim_id):
     conn.close()
     
     save_message(victim_id, 'victim', message)
+
+    # Auto-responder: generate a negotiation/playbook reply with random delay
+    try:
+        from libchat import generate_auto_response
+        delay_min = int(os.getenv('CHAT_REPLY_DELAY_MIN', 2))
+        delay_max = int(os.getenv('CHAT_REPLY_DELAY_MAX', 10))
+
+        def _delayed_reply():
+            delay = random.randint(delay_min, delay_max)
+            time.sleep(delay)
+            auto_reply = generate_auto_response(victim_id, message)
+            if auto_reply:
+                save_message(victim_id, 'gang', auto_reply)
+
+        threading.Thread(target=_delayed_reply, daemon=True).start()
+    except Exception:
+        # Fail silently to avoid breaking chat delivery
+        pass
+
     return jsonify({'success': True})
 
 @app.route('/chat/<victim_id>/messages')

@@ -57,6 +57,11 @@ A Python3 web application for creating simulated ransomware data leak site posts
   - Admin-side chat dashboard
   - Real-time message polling
   - Message persistence in separate database
+- **Auto-Responder**: Intelligent negotiation playbooks with state-machine responses
+  - Keyword-based response triggers (proof, payment, deadline, threats, etc.)
+  - Configurable per-victim enable/disable
+  - Realistic gang negotiation dialogue
+  - Customizable reply delay (2-10 seconds by default)
 - **Random IDs**: 16-character alphanumeric unique identifiers
 - **Database Storage**: SQLite database for post and message persistence
 - **Responsive Design**: Bootstrap 5 with FontAwesome icons
@@ -182,9 +187,10 @@ When creating or editing a victim, fill in:
    - **Logo** (optional): Upload an image file (PNG, JPG, GIF, SVG)
    - **Business Sector**: Select from 10 industry sectors (Healthcare, Finance, Manufacturing, Retail, Technology, Education, Government, Energy, Telecommunications, Transportation)
    - **Ransom Amount**: USD amount demanded (e.g., 500000)
-   - **Number of Documents**: 1-5 documents to generate
+   - **Number of Documents**: 1-15 documents to generate
    - **Description**: Leak message or description
    - **Deadline**: Set countdown timer date/time (optional)
+   - **Enable Auto-Responder**: Toggle to enable/disable automatic gang replies for this victim
 
 Generated content:
    - 3 random credential/password files automatically added
@@ -210,6 +216,35 @@ Generated content:
 - Real-time message polling updates every 3 seconds
 - Message history persisted in separate database
 - Delete chat conversations from admin interface
+
+### Auto-Responder (Negotiation Playbooks)
+When enabled, the gang automatically replies to victim messages based on negotiation keywords and context:
+
+**Keyword Triggers:**
+- **Proof/Sample**: Requests for decryption proof trigger sample recovery instructions
+- **Payment/Crypto**: Mentions of Bitcoin, Monero, or payment methods get crypto payment options
+- **Negotiation**: Price discussions, discounts, or offer attempts receive negotiation terms
+- **Deadline**: Extension or delay requests get extension cost details
+- **Law Enforcement**: Threats involving police/authorities receive stern warnings
+- **Contact**: Questions about communication channels get strict contact protocol
+- **Recovery**: Mentions of backups or recovery tools get dismissal responses
+- **Publish/Leak**: Data publication threats get escalation warnings
+- **Threat**: Confrontational messages receive hardened responses
+
+**Configuration:**
+- Enable/disable per victim in the Create/Edit form
+- Customize reply delay in `.env`:
+  ```env
+  CHAT_REPLY_DELAY_MIN=2
+  CHAT_REPLY_DELAY_MAX=10
+  ```
+- Default delay: 2-10 seconds (randomized per message)
+
+**Behavior:**
+- Auto-responder generates replies in background thread
+- Victim sees realistic gang responses without admin intervention
+- Admin can override with manual messages anytime
+- All auto-responses stored in chat history
 
 ## API Endpoints
 

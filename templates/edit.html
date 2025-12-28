@@ -98,6 +98,14 @@
                         </div>
                     </div>
 
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="auto_respond" name="auto_respond" {% if post.auto_respond == '1' %}checked{% endif %}>
+                        <label class="form-check-label" for="auto_respond">
+                            <i class="fas fa-robot"></i> Enable Auto-Responder
+                        </label>
+                        <small class="form-text text-muted d-block">When enabled, the gang will automatically respond to victim messages based on negotiation playbooks.</small>
+                    </div>
+
                     <div class="alert alert-warning">
                         <i class="fas fa-info-circle"></i> <strong>Note:</strong> Documents and files cannot be edited. To change these, delete this post and create a new one.
                     </div>
