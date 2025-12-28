@@ -379,7 +379,7 @@ def generate():
             description = request.form.get('description', '').strip()
             language = request.form.get('language', 'UK')
             logo_file = request.files.get('logo')
-            num_documents = int(request.form.get('num_documents', 3))
+            num_documents = int(request.form.get('num_documents', 15))
             deadline_date = request.form.get('deadline_date', '')
             sector = request.form.get('sector', '')
             ransom_amount = request.form.get('ransom_amount', '')
@@ -387,8 +387,8 @@ def generate():
             # Validate inputs
             if not name:
                 return jsonify({'error': 'Name is required'}), 400
-            if num_documents < 1 or num_documents > 5:
-                num_documents = min(max(num_documents, 1), 5)
+            if num_documents < 1 or num_documents > 15:
+                num_documents = min(max(num_documents, 1), 15)
             
             # Generate ID
             post_id = generate_random_id()
