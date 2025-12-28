@@ -35,12 +35,73 @@ def generate_database_screenshot(language='UK'):
     
     # Currency symbol by country
     currency = '£' if language == 'UK' else '€'
+
+    def local_phone(lang: str) -> str:
+        if lang == 'FR':
+            # +33 6 xx xx xx xx
+            parts = [f"{random.randint(10,99)}" for _ in range(4)]
+            return f"+33 6 {parts[0]} {parts[1]} {parts[2]} {parts[3]}"
+        if lang == 'DE':
+            # +49 15xx xxxxxx
+            return f"+49 15{random.randint(10,99)} {random.randint(100000,999999)}"
+        # UK: +44 7xxx xxx xxx
+        return f"+44 7{random.randint(100,999)} {random.randint(100,999)} {random.randint(100,999)}"
+
+    def iban_check_digits(country_code: str, bban: str) -> str:
+        """Compute IBAN check digits using mod-97."""
+        def char_to_int(ch: str) -> str:
+            if ch.isdigit():
+                return ch
+            return str(ord(ch.upper()) - 55)  # A=10, B=11, ...
+
+        rearranged = bban + country_code + "00"
+        numeric = ''.join(char_to_int(c) for c in rearranged)
+
+        mod = 0
+        for digit in numeric:
+            mod = (mod * 10 + int(digit)) % 97
+
+        check = 98 - mod
+        return str(check).zfill(2)
+
+    def format_iban(compact: str) -> str:
+        return ' '.join(compact[i:i+4] for i in range(0, len(compact), 4))
+
+    def local_iban(lang: str) -> str:
+        if lang == 'FR':
+            # FR IBAN: FRkk BBBBB GGGGG CCCCCCCCCCC KK (length 27)
+            bank = f"{random.randint(0,99999):05d}"
+            branch = f"{random.randint(0,99999):05d}"
+            account = f"{random.randint(0,99999999999):011d}"
+            rib = f"{random.randint(0,99):02d}"
+            bban = f"{bank}{branch}{account}{rib}"
+            check = iban_check_digits('FR', bban)
+            compact = f"FR{check}{bban}"
+        elif lang == 'DE':
+            # DE IBAN: DEkk BBBBBBBB CCCCCCCCCC (length 22)
+            bank = f"{random.randint(0,99999999):08d}"
+            account = f"{random.randint(0,9999999999):010d}"
+            bban = f"{bank}{account}"
+            check = iban_check_digits('DE', bban)
+            compact = f"DE{check}{bban}"
+        else:
+            # GB IBAN: GBkk BBBB SSSSSS CCCCCCCC (length 22)
+            bank = "NWBK"
+            sort_code = f"{random.randint(0,999999):06d}"
+            account = f"{random.randint(0,99999999):08d}"
+            bban = f"{bank}{sort_code}{account}"
+            check = iban_check_digits('GB', bban)
+            compact = f"GB{check}{bban}"
+
+        return format_iban(compact)
     
     for i in range(8):
         name = random.choice(names)
         domain = random.choice(domains)
         email = f"{name.lower().replace('ö','o').replace('ü','u').replace(' ', '.')}@{domain}"
         salary = random.randint(45000, 150000)
+        phone = local_phone(language)
+        iban = local_iban(language)
         
         # Country-specific ID formats
         if language == 'FR':
@@ -56,7 +117,7 @@ def generate_database_screenshot(language='UK'):
             letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
             formatted_id = f"{random.choice(letters)}{random.choice(letters)}{random.randint(100000, 999999)}{random.choice(letters)}"
         
-        rows.append(f'<text x="10" y="{100 + i*25}" font-size="11" fill="#e5e7eb" font-family="Courier New">{i+1:3d} | {name:20s} | {email:30s} | {currency}{salary:,} | {formatted_id}</text>')
+        rows.append(f'<text x="10" y="{100 + i*25}" font-size="10" fill="#e5e7eb" font-family="Courier New">{i+1:3d} | {name:18s} | {email:28s} | {currency}{salary:,} | {phone:18s} | {formatted_id:20s} | {iban}</text>')
     
     svg = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
   <defs>
@@ -74,9 +135,9 @@ def generate_database_screenshot(language='UK'):
   <circle cx="60" cy="20" r="6" fill="#22c55e"/>
   <text x="90" y="25" font-size="14" fill="#94a3b8" font-family="monospace">employees_export.csv - 18,420 records</text>
   
-  <!-- Header -->
-  <text x="10" y="70" font-size="12" fill="#10b981" font-weight="bold" font-family="Courier New">ID  | NAME                 | EMAIL                          | SALARY   | SSN</text>
-  <line x1="10" y1="75" x2="790" y2="75" stroke="#374151" stroke-width="1"/>
+    <!-- Header -->
+    <text x="10" y="70" font-size="11" fill="#10b981" font-weight="bold" font-family="Courier New">ID  | NAME               | EMAIL                        | SALARY   | PHONE             | ID / NIN | IBAN</text>
+    <line x1="10" y1="75" x2="790" y2="75" stroke="#374151" stroke-width="1"/>
   
   <!-- Data rows -->
   {chr(10).join(rows)}
