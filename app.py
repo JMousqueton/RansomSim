@@ -9,6 +9,7 @@ from flask import Flask, render_template, request, jsonify, redirect, url_for, s
 from werkzeug.utils import secure_filename
 import logging
 from libnews import generate_news_article
+from libscreenshots import generate_database_screenshot, generate_legal_screenshot, generate_email_screenshot
 
 # Load environment variables from .env file
 from dotenv import load_dotenv
@@ -790,6 +791,22 @@ def delete_chat(victim_id):
 def uploaded_file(filename):
     """Serve uploaded files"""
     return send_file(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+@app.route('/screenshot/<screenshot_type>/<language>.svg')
+def get_screenshot(screenshot_type, language='UK'):
+    """Generate fake screenshot SVG images for proof of breach"""
+    from flask import Response
+    
+    if screenshot_type == 'database':
+        svg_content = generate_database_screenshot(language)
+    elif screenshot_type == 'legal':
+        svg_content = generate_legal_screenshot(language)
+    elif screenshot_type == 'email':
+        svg_content = generate_email_screenshot(language)
+    else:
+        return "Screenshot not found", 404
+    
+    return Response(svg_content, mimetype='image/svg+xml')
 
 # ============================================================================
 # FAKE NEWS/MEDIA COVERAGE FEATURE

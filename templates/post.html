@@ -137,6 +137,114 @@
         </div>
         {% endif %}
 
+        <div class="mb-4">
+            <h4 class="d-flex align-items-center gap-2">
+                <i class="fas fa-images text-danger"></i>
+                
+                Proof of Breach
+           
+            </h4>
+            <p class="text-muted small mb-3">
+                
+                Representative previews of exfiltrated data .
+            
+            </p>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="card h-100 shadow-sm border-0">
+                        <img src="{{ url_for('get_screenshot', screenshot_type='database', language=post.language) }}" class="card-img-top" alt="Database export screenshot" style="border-radius: 0.375rem 0.375rem 0 0;">
+                        <div class="card-body">
+                            <h6 class="card-title mb-1">
+                                <i class="fas fa-user-shield text-danger"></i> 
+                                
+                                HR Data Leak
+                            
+                            </h6>
+                            <p class="card-text small text-muted mb-2">
+                                {% if post.language == 'FR' %}
+                                Noms, emails, téléphones, tranches salariales et identifiants hachés.
+                                {% elif post.language == 'DE' %}
+                                Namen, E-Mails, Telefonnummern, Gehaltsbänder und verschlüsselte Anmeldedaten.
+                                {% else %}
+                                Names, emails, phone numbers, salary bands, and hashed credentials.
+                                {% endif %}
+                            </p>
+                            <span class="badge bg-warning text-dark">
+                                <i class="fas fa-lock-open"></i> 
+                                
+                                Proof sample
+
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 shadow-sm border-0">
+                        <img src="{{ url_for('get_screenshot', screenshot_type='legal', language=post.language) }}" class="card-img-top" alt="Legal document screenshot" style="border-radius: 0.375rem 0.375rem 0 0;">
+                        <div class="card-body">
+                            <h6 class="card-title mb-1">
+                                <i class="fas fa-balance-scale text-primary"></i> 
+                                {% if post.language == 'FR' %}
+                                Contrats Confidentiels
+                                {% elif post.language == 'DE' %}
+                                Vertrauliche Verträge
+                                {% else %}
+                                Confidential Contracts
+                                {% endif %}
+                            </h6>
+                            <p class="card-text small text-muted mb-2">
+                                {% if post.language == 'FR' %}
+                                Accords de confidentialité, procès-verbaux du conseil et extraits de stratégies de F&A.
+                                {% elif post.language == 'DE' %}
+                                Geheimhaltungsvereinbarungen, Sitzungsprotokolle und M&A-Strategieauszüge.
+                                {% else %}
+                                Non-disclosure agreements, board minutes, and M&A strategy excerpts.
+                                {% endif %}
+                            </p>
+                            <span class="badge bg-secondary">
+                                <i class="fas fa-eye"></i> 
+                                
+                                Redacted view
+                                
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 shadow-sm border-0">
+                        <img src="{{ url_for('get_screenshot', screenshot_type='email', language=post.language) }}" class="card-img-top" alt="Email inbox screenshot" style="border-radius: 0.375rem 0.375rem 0 0;">
+                        <div class="card-body">
+                            <h6 class="card-title mb-1">
+                                <i class="fas fa-mail-bulk text-danger"></i> 
+                                {% if post.language == 'FR' %}
+                                Emails de Direction
+                                {% elif post.language == 'DE' %}
+                                Führungs-E-Mails
+                                {% else %}
+                                Executive Emails
+                                {% endif %}
+                            </h6>
+                            <p class="card-text small text-muted mb-2">
+                                {% if post.language == 'FR' %}
+                                Négociations, chronologies d'incidents, litiges fournisseurs et pièces jointes sensibles.
+                                {% elif post.language == 'DE' %}
+                                Verhandlungen, Vorfallzeitpläne, Anbieterstreitigkeiten und sensible Anhänge.
+                                {% else %}
+                                Negotiations, incident timelines, vendor disputes, and sensitive attachments.
+                                {% endif %}
+                            </p>
+                            <span class="badge bg-info text-dark">
+                                <i class="fas fa-exclamation-triangle"></i> 
+                                
+                                Sensitive
+                                
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <hr>
 
         <h4 class="mb-3"><i class="fas fa-file"></i> Leaked Documents</h4>
