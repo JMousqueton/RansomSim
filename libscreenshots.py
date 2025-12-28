@@ -213,38 +213,147 @@ def generate_legal_screenshot(language='UK'):
 def generate_email_screenshot(language='UK'):
     """Generate SVG screenshot of Outlook email inbox"""
     
-    # Country-specific email subjects and senders
+    # Country-specific email subjects and senders (20+ per country)
     if language == 'FR':
-        subjects = [
+        all_subjects = [
             ("Plan de Restructuration Q4 - CONFIDENTIEL", "Bureau du PDG", "14:32", True),
             ("RE: Litige Contrat Fournisseur - Juridique", "Service Juridique", "12/15", False),
             ("URGENT: Réponse Incident Sécurité", "RSSI", "Hier", True),
             ("TR: Liste Licenciements - NE PAS PARTAGER", "Directeur RH", "12/10", True),
             ("Aperçu Résultats Financiers (Pré-publication)", "DAF", "12/08", False),
             ("TR: Analyse Cible F&amp;A - Revue Conseil", "VP Stratégie", "12/05", True),
+            ("Données Clients - Base de Données Complète", "Directeur IT", "12/04", True),
+            ("Stratégie Tarifaire 2024 - Concurrent Analysis", "Directeur Commercial", "12/03", True),
+            ("Accord de Partenariat Exclusif - Signature", "Développement Commercial", "12/01", False),
+            ("Budget de Santé Projet - Réductions Requises", "Contrôleur Financier", "11/30", True),
+            ("Plans de Fermeture d'Usine - Emplacements Proposés", "Directeur Opérations", "11/28", True),
+            ("Données Propriétaires de Recherche R&amp;D", "VP Innovation", "11/26", False),
+            ("Contrats de Lithographie Secrète - Fournisseur", "VP Fabrication", "11/25", True),
+            ("Marges Bénéficiaires Par Produit - Analyse", "Directeur Produit", "11/23", False),
+            ("Liste Noire de Clients Mauvais Payeurs", "Chef Crédit", "11/22", True),
+            ("Plans de Restructuration Internationale - Détails", "Directeur Ressources", "11/20", True),
+            ("Résultats d'Essais Pharmaceutiques Confidentiels", "Chef Développement", "11/19", False),
+            ("Stratégie d'Acquisition - Cibles Alternatives", "Directeur Fusion", "11/18", True),
+            ("Codes Sources Propriétaires - Backup Externe", "Directeur Technique", "11/17", True),
+            ("Informations de Brevets en Attente - Portfolio", "Conseil Brevets", "11/16", False),
         ]
     elif language == 'DE':
-        subjects = [
+        all_subjects = [
             ("Q4-Umstrukturierungsplan - VERTRAULICH", "CEO-Büro", "14:32", True),
             ("RE: Lieferantenvertragsstreit - Recht", "Rechtsabteilung", "12/15", False),
             ("DRINGEND: Sicherheitsvorfallreaktion", "CISO", "Gestern", True),
             ("WG: Kündigungsliste - NICHT TEILEN", "HR-Direktor", "12/10", True),
             ("Finanzergebnisvorschau (Vor Veröffentlichung)", "CFO", "12/08", False),
             ("WG: M&amp;A-Zielanalyse - Vorstandsprüfung", "VP Strategie", "12/05", True),
+            ("Kundendaten - Vollständige Datenbank", "IT-Leiter", "12/04", True),
+            ("Preisgestaltungsstrategie 2024 - Wettbewerbsanalyse", "Vertriebsdirektor", "12/03", True),
+            ("Exklusives Partnerschaftsabkommen - Unterzeichnung", "Geschäftsentwicklung", "12/01", False),
+            ("Projektgesundheitsbudget - Erforderliche Kürzungen", "Finanzcontroller", "11/30", True),
+            ("Pläne für Werkschließungen - Vorgeschlagene Standorte", "Operationsdirektor", "11/28", True),
+            ("Proprietäre F&amp;D-Forschungsdaten", "VP Innovation", "11/26", False),
+            ("Geheime Lithografiekontrakte - Anbieter", "VP Fertigung", "11/25", True),
+            ("Gewinnmargen pro Produkt - Analyse", "Produktdirektor", "11/23", False),
+            ("Blacklist zahlungsunwilliger Kunden", "Kreditchef", "11/22", True),
+            ("Internationale Umstrukturungspläne - Details", "HR-Direktor", "11/20", True),
+            ("Ergebnisse vertraulicher Pharmatests", "Entwicklungschef", "11/19", False),
+            ("Akquisitionsstrategie - Alternative Ziele", "Fusionsdirektor", "11/18", True),
+            ("Proprietäre Quellcodes - Externes Backup", "Technischer Direktor", "11/17", True),
+            ("Ausstehende Patentinformationen - Portfolio", "Patentrat", "11/16", False),
         ]
     else:  # UK
-        subjects = [
+        all_subjects = [
             ("Q4 Restructuring Plan - CONFIDENTIAL", "CEO Office", "14:32", True),
             ("RE: Vendor Contract Dispute - Legal", "Legal Department", "12/15", False),
             ("URGENT: Security Incident Response", "CISO", "Yesterday", True),
             ("FW: Employee Termination List - DO NOT SHARE", "HR Director", "12/10", True),
             ("Financial Results Preview (Pre-Earnings)", "CFO", "12/08", False),
             ("M&amp;A Target Analysis - Board Review", "Strategy VP", "12/05", True),
+            ("Customer Database - Complete Extract", "IT Director", "12/04", True),
+            ("Pricing Strategy 2024 - Competitor Analysis", "Sales Director", "12/03", True),
+            ("Exclusive Partnership Agreement - Signature", "Business Development", "12/01", False),
+            ("Project Health Budget - Required Cuts", "Finance Controller", "11/30", True),
+            ("Factory Closure Plans - Proposed Locations", "Operations Director", "11/28", True),
+            ("Proprietary R&amp;D Research Data", "VP Innovation", "11/26", False),
+            ("Secret Lithography Contracts - Supplier", "VP Manufacturing", "11/25", True),
+            ("Profit Margins By Product - Analysis", "Product Director", "11/23", False),
+            ("Blacklist of Bad Payer Customers", "Credit Chief", "11/22", True),
+            ("International Restructuring Plans - Details", "HR Director", "11/20", True),
+            ("Confidential Pharmaceutical Trial Results", "Development Chief", "11/19", False),
+            ("Acquisition Strategy - Alternative Targets", "Merger Director", "11/18", True),
+            ("Proprietary Source Code - External Backup", "Technical Director", "11/17", True),
+            ("Pending Patent Information - Portfolio", "Patent Counsel", "11/16", False),
         ]
+    
+    # Randomly select 10 emails to display
+    selected_subjects = random.sample(all_subjects, min(10, len(all_subjects)))
+    
+    # Generate dynamic dates
+    def format_email_date(days_ago):
+        """Format date realistically for email display"""
+        if days_ago == 0:
+            # Today - show time
+            hour = random.randint(8, 17)
+            minute = random.randint(0, 59)
+            return f"{hour:02d}:{minute:02d}"
+        elif days_ago == 1:
+            if language == 'FR':
+                return "Hier"
+            elif language == 'DE':
+                return "Gestern"
+            else:  # UK 
+                return "Yesterday"
+        #elif days_ago < 7:
+        #    if language == 'FR':
+        #        return f"{days_ago}j"
+        #    elif language == 'DE':
+        #        return f"{days_ago}T"
+        #    else:  # UK
+        #        return f"{days_ago}d"
+        else:
+            # Show date
+            email_date = datetime.now() - timedelta(days=days_ago)
+            if language == 'FR':
+                return email_date.strftime("%d/%m")
+            elif language == 'DE':
+                return email_date.strftime("%d.%m")
+            else:  # UK
+                return email_date.strftime("%m/%d")
+    
+    # Generate emails with dates and sort by priority: today (hours) > yesterday > older dates
+    emails_with_dates = []
+    for subject, sender, _, unread in selected_subjects:
+        days_ago = random.choices(
+            [0, 1, 2, 3, 4, 5, 6, 7, 14, 21, 30],
+            weights=[20, 15, 12, 10, 8, 6, 5, 4, 3, 2, 5],
+            k=1
+        )[0]
+        formatted_date = format_email_date(days_ago)
+        emails_with_dates.append((subject, sender, days_ago, formatted_date, unread))
+    
+    # Sort by priority: today (0) first sorted by time, yesterday (1) second, then by days_ago
+    def sort_key(email):
+        subject, sender, days_ago, formatted_date, unread = email
+        
+        # Extract hour and minute from formatted_date if days_ago == 0
+        if days_ago == 0:
+            try:
+                hours, minutes = map(int, formatted_date.split(':'))
+                # Return tuple: (priority=0 for today, -hours for descending time order, -minutes)
+                return (0, -hours, -minutes)
+            except:
+                return (0, 0, 0)
+        elif days_ago == 1:
+            # Yesterday comes second
+            return (1, 0, 0)
+        else:
+            # Older emails sorted by days_ago (ascending - most recent first)
+            return (2, days_ago, 0)
+    
+    emails_with_dates.sort(key=sort_key)
     
     email_rows = []
     y_pos = 145
-    for i, (subject, sender, date, unread) in enumerate(subjects):
+    for i, (subject, sender, _, formatted_date, unread) in enumerate(emails_with_dates):
         bg_color = "#f3f4f6" if i % 2 == 0 else "#ffffff"
         font_weight = "bold" if unread else "normal"
         unread_indicator = '<circle cx="70" cy="{}" r="4" fill="#0078d4"/>'.format(y_pos + 15) if unread else ''
@@ -254,7 +363,7 @@ def generate_email_screenshot(language='UK'):
   {unread_indicator}
   <text x="85" y="{y_pos + 12}" font-size="10" fill="#323130" font-weight="{font_weight}" font-family="Arial, sans-serif">{sender}</text>
   <text x="85" y="{y_pos + 24}" font-size="9" fill="#605e5c" font-family="Arial, sans-serif">{subject}</text>
-  <text x="750" y="{y_pos + 18}" font-size="9" fill="#605e5c" font-family="Arial, sans-serif" text-anchor="end">{date}</text>''')
+  <text x="750" y="{y_pos + 18}" font-size="9" fill="#605e5c" font-family="Arial, sans-serif" text-anchor="end">{formatted_date}</text>''')
         y_pos += 33
     
     svg = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
