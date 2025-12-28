@@ -19,6 +19,9 @@ load_dotenv()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# In-memory storage for typing indicators
+typing_status = {}  # {victim_id: timestamp}
+
 # ============================================================================
 # GENERATOR FUNCTIONS AND CLASSES
 # ============================================================================
@@ -681,20 +684,43 @@ def send_message(victim_id):
 
     # Auto-responder: generate a negotiation/playbook reply with random delay
     try:
-        from libchat import generate_auto_response
-        delay_min = int(os.getenv('CHAT_REPLY_DELAY_MIN', 2))
-        delay_max = int(os.getenv('CHAT_REPLY_DELAY_MAX', 10))
+        # Check if auto-responder is enabled for this victim
+        conn = sqlite3.connect('ransomsim.db')
+        c = conn.cursor()
+        c.execute('SELECT auto_respond FROM posts WHERE id = ?', (victim_id,))
+        result = c.fetchone()
+        conn.close()
+        
+        auto_respond_enabled = result and result[0] == '1'
+        
+        if auto_respond_enabled:
+            from libchat import generate_auto_response
+            delay_min = int(os.getenv('CHAT_REPLY_DELAY_MIN', 2))
+            delay_max = int(os.getenv('CHAT_REPLY_DELAY_MAX', 10))
 
-        def _delayed_reply():
-            delay = random.randint(delay_min, delay_max)
-            time.sleep(delay)
-            auto_reply = generate_auto_response(victim_id, message)
-            if auto_reply:
-                save_message(victim_id, 'gang', auto_reply)
+            def _delayed_reply():
+                # Set typing indicator
+                typing_status[victim_id] = time.time()
+                logger.info(f"Auto-responder typing indicator set for {victim_id}")
+                
+                delay = random.randint(delay_min, delay_max)
+                time.sleep(delay)
+                auto_reply = generate_auto_response(victim_id, message)
+                if auto_reply:
+                    save_message(victim_id, 'gang', auto_reply)
+                    logger.info(f"Auto-response sent for {victim_id}")
+                
+                # Clear typing indicator
+                if victim_id in typing_status:
+                    del typing_status[victim_id]
+                    logger.info(f"Auto-responder typing indicator cleared for {victim_id}")
 
-        threading.Thread(target=_delayed_reply, daemon=True).start()
-    except Exception:
+            threading.Thread(target=_delayed_reply, daemon=True).start()
+    except Exception as e:
         # Fail silently to avoid breaking chat delivery
+        logger.error(f"Auto-responder error: {e}")
+        if victim_id in typing_status:
+            del typing_status[victim_id]
         pass
 
     return jsonify({'success': True})
@@ -709,6 +735,12 @@ def get_chat_messages(victim_id):
         'message': msg['message'],
         'created_at': msg['created_at']
     } for msg in messages])
+
+@app.route('/chat/<victim_id>/typing')
+def get_typing_status(victim_id):
+    """Check if auto-responder is typing for this victim"""
+    is_typing = victim_id in typing_status
+    return jsonify({'typing': is_typing})
 
 @app.route('/admin/chat')
 def admin_chat():

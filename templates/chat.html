@@ -41,6 +41,16 @@
                             <p class="small">Send a message below to begin negotiation.</p>
                         </div>
                     {% endif %}
+                    
+                    <!-- Typing indicator -->
+                    <div id="typingIndicator" class="message mb-3" style="display: none;">
+                        <div class="d-inline-block p-2 rounded bg-secondary text-white" style="max-width: 70%;">
+                            <small class="d-block fw-bold">
+                                <i class="fas fa-user-secret"></i> Support
+                            </small>
+                            <div id="typingText">is writing<span id="typingDots">.</span></div>
+                        </div>
+                    </div>
                 </div>
 
                 <form id="chatForm">
@@ -73,12 +83,60 @@ document.addEventListener('DOMContentLoaded', function() {
     const chatForm = document.getElementById('chatForm');
     const messageInput = document.getElementById('messageInput');
     const chatMessages = document.getElementById('chatMessages');
+    const typingIndicator = document.getElementById('typingIndicator');
+    const typingDots = document.getElementById('typingDots');
+    
+    let dotCount = 1;
+    let typingAnimationInterval = null;
+    let isTyping = false;  // Track typing state
     
     // Function to convert URLs in text to clickable links
     function linkify(text) {
         const urlRegex = /(https?:\/\/[^\s]+)/g;
         return text.replace(urlRegex, function(url) {
             return '<a href="' + url + '" target="_blank" class="text-warning text-decoration-underline"><i class="fas fa-external-link-alt"></i> ' + url + '</a>';
+        });
+    }
+    
+    // Animate typing dots
+    function animateTypingDots() {
+        dotCount = (dotCount % 3) + 1;
+        const dotsElement = document.getElementById('typingDots');
+        if (dotsElement) {
+            dotsElement.textContent = '.'.repeat(dotCount);
+        }
+    }
+    
+    // Check typing status
+    function checkTypingStatus() {
+        fetch('{{ url_for("get_typing_status", victim_id=victim_id) }}')
+        .then(response => response.json())
+        .then(data => {
+            console.log('Typing status:', data.typing);
+            
+            if (data.typing && !isTyping) {
+                // Start typing
+                isTyping = true;
+                typingIndicator.style.display = 'block';
+                if (!typingAnimationInterval) {
+                    typingAnimationInterval = setInterval(animateTypingDots, 500);
+                }
+                updateTypingIndicator();
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            } else if (!data.typing && isTyping) {
+                // Stop typing
+                isTyping = false;
+                typingIndicator.style.display = 'none';
+                if (typingAnimationInterval) {
+                    clearInterval(typingAnimationInterval);
+                    typingAnimationInterval = null;
+                    dotCount = 1;
+                }
+                updateTypingIndicator();
+            }
+        })
+        .catch(error => {
+            console.error('Error checking typing status:', error);
         });
     }
     
@@ -148,12 +206,43 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
             
+            // Re-add typing indicator after loading messages
+            updateTypingIndicator();
+            
             chatMessages.scrollTop = chatMessages.scrollHeight;
         });
     }
     
+    // Update typing indicator visibility and content
+    function updateTypingIndicator() {
+        // Remove existing typing indicator if present
+        const existingIndicator = document.getElementById('typingIndicator');
+        if (existingIndicator) {
+            existingIndicator.remove();
+        }
+        
+        // Add indicator if typing
+        if (isTyping) {
+            const newIndicator = document.createElement('div');
+            newIndicator.id = 'typingIndicator';
+            newIndicator.className = 'message mb-3';
+            newIndicator.innerHTML = `
+                <div class="d-inline-block p-2 rounded bg-secondary text-white" style="max-width: 70%;">
+                    <small class="d-block fw-bold">
+                        <i class="fas fa-user-secret"></i> Support
+                    </small>
+                    <div id="typingText">is writing<span id="typingDots">${'.'.repeat(dotCount)}</span></div>
+                </div>
+            `;
+            chatMessages.appendChild(newIndicator);
+        }
+    }
+    
     // Poll for new messages every 3 seconds
     setInterval(loadMessages, 3000);
+    
+    // Poll for typing status every second
+    setInterval(checkTypingStatus, 1000);
 });
 </script>
 {% endblock %}
