@@ -12,9 +12,10 @@
 </div>
 
 {% if posts %}
-    <div class="row">
+    <!-- Grid container for responsive multi-column layout -->
+    <div class="victims-grid">
         {% for post in posts %}
-        <div class="col-lg-6 mb-4">
+        <div class="victim-card">
             <div class="card h-100 shadow-sm">
                 {% if post.logo_path %}
                 <img src="{{ post.logo_path }}" class="card-img-top" alt="Logo" style="max-height: 200px; object-fit: contain; padding: 10px;">

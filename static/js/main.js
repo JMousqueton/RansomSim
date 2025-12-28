@@ -89,9 +89,9 @@ function updateCountdown(element) {
     const deadlineDate = new Date(deadlineStr.replace(' ', 'T'));
     const now = new Date();
     const diff = deadlineDate - now;
-    
+
     if (diff <= 0) {
-        element.innerHTML = '<span style="color: #dc3545; font-weight: bold;">⏰ EXPIRED</span>';
+        element.innerHTML = '<span style="color: #dc3545; font-weight: bold;"><i class="fa-solid fa-alarm-clock"></i> EXPIRED</span>';
         return;
     }
     

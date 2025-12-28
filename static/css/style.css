@@ -231,6 +231,31 @@ main {
     }
 }
 
+/* Masonry/Grid Layout for Victim Cards */
+.victims-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+}
+
+/* Optional Masonry using CSS columns for variable heights */
+.victims-masonry {
+    column-count: 1;
+    column-gap: 1rem;
+}
+
+@media (min-width: 576px) {
+    .victims-masonry { column-count: 2; }
+}
+
+@media (min-width: 992px) {
+    .victims-masonry { column-count: 3; }
+}
+
+.victim-card {
+    break-inside: avoid;
+}
+
 /* Utility Classes */
 .text-danger {
     color: #dc3545 !important;
