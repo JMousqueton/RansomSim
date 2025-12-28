@@ -750,7 +750,14 @@ def delete_chat(victim_id):
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     """Serve uploaded files"""
-    return send_file(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    # Sanitize the filename and ensure the resolved path stays within UPLOAD_FOLDER
+    safe_name = secure_filename(filename)
+    upload_root = os.path.realpath(app.config['UPLOAD_FOLDER'])
+    full_path = os.path.realpath(os.path.join(upload_root, safe_name))
+    if not (full_path == upload_root or full_path.startswith(upload_root + os.sep)):
+        # Do not reveal whether the file exists; just return 404
+        return render_template('404.html'), 404
+    return send_file(full_path)
 
 @app.errorhandler(404)
 def not_found(error):
