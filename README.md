@@ -2,6 +2,37 @@
 
 A Python3 web application for creating simulated ransomware data leak site posts. This educational tool allows you to generate realistic fake posts with language-specific document names and files.
 
+## Screenshots
+
+### Public Leak Site
+![Victim Index](.github/screenshots/00-index.png)
+*Main page displaying all published victims with sector badges and ransom amounts*
+
+### Victim Chat Interface
+![Chat Login](.github/screenshots/01-chat.png)
+*Victim chat login page where victims enter their unique ID*
+
+![Chat Dialogue](.github/screenshots/02-chat-dialogue.png)
+*Real-time chat interface for victims to negotiate with the ransomware gang*
+
+### Admin Panel
+![Admin Dashboard](.github/screenshots/03-admin-panel.png)
+*Secure admin dashboard for managing victims and viewing statistics*
+
+![Create Victim](.github/screenshots/04-admin-create-victim.png)
+*Generate new victim entries with customizable details, sectors, and ransom amounts*
+
+### Admin Chat Management
+![Chat Management](.github/screenshots/05-admin-chat-management.png)
+*Overview of all active victim conversations*
+
+![Admin Chat](.github/screenshots/06-admin-chat-dialogue.png)
+*Admin interface for responding to victim messages*
+
+### Ransom Note Generation
+![Ransom Note](.github/screenshots/07-RansomNote.png)
+*Generated ransom note with victim details and contact information*
+
 ## Features
 
 - **Multi-language Support**: English (UK), French (FR), and German (DE)
