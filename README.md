@@ -136,6 +136,22 @@ RansomSim/
 6. **Access the application:**
    Open your browser and navigate to `http://localhost:5002` (or custom port from .env)
 
+### Seed Example Data (optional)
+Use the bulk seeder to quickly create realistic victims for demos and testing.
+
+1. Seed default 10 victims:
+   ```bash
+   python ./scripts/seed.py
+   ```
+2. Seed a custom number (e.g., 25 victims):
+   ```bash
+   python ./scripts/seed.py -n 25
+   ```
+Notes:
+- The seeder uses Faker to generate names, descriptions, sectors, languages, ransom amounts, deadlines, and document/file names.
+- It writes directly to `ransomsim.db` and does not upload logos.
+- You can run it multiple times to add more victims.
+
 ### Admin Access
 - Admin login page: `http://localhost:5002/login`
 - Default password: `admin123` (configured in `.env`)
