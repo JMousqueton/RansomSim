@@ -67,7 +67,6 @@ A Python3 web application for creating simulated ransomware data leak site posts
 ```
 RansomSim/
 ├── app.py                 # Main Flask application
-├── generators.py          # Document and file name generators
 ├── requirements.txt       # Python dependencies
 ├── .env                   # Environment configuration (PORT, ADMIN_PASSWORD)
 ├── ransomsim.db          # SQLite database for victims (auto-created)
@@ -89,8 +88,7 @@ RansomSim/
 │   │   └── style.css     # Custom CSS styling
 │   └── js/
 │       └── main.js       # JavaScript utilities
-├── uploads/              # Uploaded logo images
-└── generated_files/      # Generated files storage
+└── uploads/              # Uploaded logo images
 ```
 
 ## Installation
