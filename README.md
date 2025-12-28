@@ -81,6 +81,8 @@ A Python3 web application for creating simulated ransomware data leak site posts
 ```
 RansomSim/
 ├── app.py                 # Main Flask application
+├── libnews.py             # News article generation module
+├── libscreenshots.py      # Proof of breach screenshot generators
 ├── requirements.txt       # Python dependencies
 ├── .env                   # Environment configuration (PORT, ADMIN_PASSWORD)
 ├── ransomsim.db          # SQLite database for victims (auto-created)
@@ -258,6 +260,43 @@ When enabled, the gang automatically replies to victim messages based on negotia
 - Victim sees realistic gang responses without admin intervention
 - Admin can override with manual messages anytime
 - All auto-responses stored in chat history
+
+### Proof of Breach Gallery
+Displays realistic simulated screenshots of exfiltrated data to prove the gang has actual breach evidence:
+
+**Features:**
+- Three auto-generated realistic screenshot types in SVG format:
+  1. **HR Database Export** - Terminal-style CSV showing employee PII (names, emails, IDs, salaries)
+  2. **Confidential Legal Documents** - NDA document with M&A discussions and sensitive information
+  3. **Executive Emails** - Microsoft Outlook inbox with confidential business communications
+- **Country-specific realism**:
+  - Employee names from realistic pools per country (UK, FR, DE)
+  - Local email domains (yahoo.co.uk, free.fr, web.de, etc.)
+  - Country-specific ID formats:
+    - UK: National Insurance Numbers (AB123456C)
+    - FR: INSEE numbers (13-digit format)
+    - DE: Personalausweisnummer (10-digit format)
+  - Correct currency symbols (£ for UK, € for FR/DE)
+- **Dynamic email content**:
+  - Pool of 20+ confidential subject lines per language
+  - Randomly selects and displays 10 emails per screenshot
+  - Emails sorted by recency: today (by time) → yesterday → older emails
+  - Realistic timestamps and unread indicators
+  - Language-localized sender titles and departments
+- **Multi-language support**: All titles, descriptions, and content in UK English, French, or German
+- **Gallery cards** in victim detail page showing:
+  - Visual preview of each screenshot
+  - Description of leaked data type
+  - Badge indicating proof type (Proof sample, Redacted view, Sensitive)
+
+**Accessed Via:**
+- `/post/<victim_id>` - "Proof of Breach" gallery appears above media coverage section
+- Screenshots auto-generate dynamically each page load with different data
+
+**Sample Screenshots Include:**
+- HR Data Leak: Names like "Oliver Thompson" (UK), "Pierre Dubois" (FR), "Lukas Müller" (DE)
+- Legal Document: Realistic NDA with confidential M&A information, dates, classified content
+- Executive Emails: Topics like "Q4 Restructuring Plan", "Employee Termination List", "M&A Target Analysis"
 
 ### Fake News/Media Coverage
 Adds immersive realism to the simulation by generating realistic news articles about breaches:
