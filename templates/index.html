@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}Home - RansomSim{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1 class="mb-4">
+            <i class="fas fa-list"></i> Victims
+        </h1>
+    </div>
+</div>
+
+{% if posts %}
+    <div class="row">
+        {% for post in posts %}
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100 shadow-sm">
+                {% if post.logo_path %}
+                <img src="{{ post.logo_path }}" class="card-img-top" alt="Logo" style="max-height: 200px; object-fit: contain; padding: 10px;">
+                {% else %}
+                <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 200px;">
+                    <i class="fas fa-image text-white" style="font-size: 3rem;"></i>
+                </div>
+                {% endif %}
+                
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-building"></i> {{ post.name }}
+                    </h5>
+                    <p class="card-text text-muted">
+                        <small><i class="fas fa-id-card"></i> ID: <code>{{ post.id }}</code></small><br>
+                        <small><i class="fas fa-flag"></i> Country: <span class="badge bg-info">{{ post.language }}</span></small><br>
+                        <small><i class="fas fa-calendar"></i> Created: {{ post.created_at }}</small>
+                    </p>
+                    
+                    {% if post.sector or post.ransom_amount %}
+                    <div class="mb-2">
+                        {% if post.sector %}
+                        <small>
+                            <span class="badge bg-warning me-1">
+                                {% if post.sector == 'healthcare' %}
+                                <i class="fas fa-hospital"></i> Healthcare
+                                {% elif post.sector == 'finance' %}
+                                <i class="fas fa-money-bill"></i> Finance
+                                {% elif post.sector == 'manufacturing' %}
+                                <i class="fas fa-industry"></i> Manufacturing
+                                {% elif post.sector == 'retail' %}
+                                <i class="fas fa-shopping-cart"></i> Retail
+                                {% elif post.sector == 'technology' %}
+                                <i class="fas fa-laptop"></i> Technology
+                                {% elif post.sector == 'education' %}
+                                <i class="fas fa-graduation-cap"></i> Education
+                                {% elif post.sector == 'government' %}
+                                <i class="fas fa-landmark"></i> Government
+                                {% elif post.sector == 'energy' %}
+                                <i class="fas fa-bolt"></i> Energy
+                                {% elif post.sector == 'telecommunications' %}
+                                <i class="fas fa-broadcast-tower"></i> Telecommunications
+                                {% elif post.sector == 'transportation' %}
+                                <i class="fas fa-truck"></i> Transportation
+                                {% else %}
+                                {{ post.sector|title }}
+                                {% endif %}
+                            </span>
+                        </small>
+                        {% endif %}
+                        {% if post.ransom_amount %}
+                        <small>
+                            <span class="badge bg-danger">
+                                <i class="fas fa-dollar-sign"></i> {{ "{:,}".format(post.ransom_amount|int) if post.ransom_amount.isdigit() else post.ransom_amount }}
+                            </span>
+                        </small>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    
+                    {% if post.description %}
+                    <p class="card-text">
+                        <small><strong>Description:</strong><br>{{ post.description[:100] }}{% if post.description|length > 100 %}...{% endif %}</small>
+                    </p>
+                    {% endif %}
+
+                    {% if post.deadline_date %}
+                    <div class="alert alert-warning p-2 mb-3">
+                        <small><i class="fas fa-hourglass-end"></i> <strong>Deadline:</strong></small><br>
+                        <small><span class="countdown" data-deadline="{{ post.deadline_date }}">Loading...</span></small>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="card-footer bg-white">
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ url_for('view_post', post_id=post.id) }}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-eye"></i> View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-info" role="alert">
+        <i class="fas fa-info-circle"></i> No victim yet.
+    </div>
+{% endif %}
+
+{% endblock %}

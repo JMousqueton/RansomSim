@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block title %}Secure Chat - {{ victim_name }} - RansomSim{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow border-danger">
+            <div class="card-header bg-danger text-white">
+                <h2 class="mb-0">
+                    <i class="fas fa-lock"></i> Secure Communication Channel
+                </h2>
+            </div>
+            <div class="card-body p-4">
+                <div class="alert alert-warning mb-4">
+                    <i class="fas fa-exclamation-triangle"></i> <strong>Victim ID:</strong> <code>{{ victim_id }}</code>
+                    <br><i class="fas fa-building"></i> <strong>Organization:</strong> {{ victim_name }}
+                </div>
+
+                <div id="chatMessages" class="bg-light p-3 rounded mb-3" style="min-height: 400px; max-height: 400px; overflow-y: auto; border: 2px solid #dc3545;">
+                    {% if messages %}
+                        {% for msg in messages %}
+                        <div class="message mb-3 {% if msg.sender == 'victim' %}text-end{% endif %}">
+                            <div class="d-inline-block p-2 rounded {% if msg.sender == 'victim' %}bg-primary text-white{% else %}bg-secondary text-white{% endif %}" style="max-width: 70%;">
+                                <small class="d-block fw-bold">
+                                    {% if msg.sender == 'victim' %}
+                                    <i class="fas fa-user"></i> You
+                                    {% else %}
+                                    <i class="fas fa-user-secret"></i> Support
+                                    {% endif %}
+                                </small>
+                                <div>{{ msg.message }}</div>
+                                <small class="d-block text-white-50 mt-1" style="font-size: 0.7rem;">{{ msg.created_at }}</small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center text-muted py-5">
+                            <i class="fas fa-comments fa-3x mb-3"></i>
+                            <p><strong>Start a conversation</strong></p>
+                            <p class="small">Send a message below to begin negotiation.</p>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <form id="chatForm">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="messageInput" placeholder="Type your message..." required>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-paper-plane"></i> Send
+                        </button>
+                    </div>
+                </form>
+
+                <div class="alert alert-info mt-3">
+                    <i class="fas fa-info-circle"></i> <strong>Educational Notice:</strong> This is a simulation tool for cybersecurity training purposes only.
+                </div>
+
+                <div class="text-center mt-3">
+                    <a href="{{ url_for('index') }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to Leak Site
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const chatForm = document.getElementById('chatForm');
+    const messageInput = document.getElementById('messageInput');
+    const chatMessages = document.getElementById('chatMessages');
+    
+    // Scroll to bottom on load
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    
+    chatForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const message = messageInput.value.trim();
+        if (!message) return;
+        
+        // Send message
+        fetch('{{ url_for("send_message", victim_id=victim_id) }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'message=' + encodeURIComponent(message)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                messageInput.value = '';
+                loadMessages();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to send message');
+        });
+    });
+    
+    function loadMessages() {
+        fetch('{{ url_for("get_chat_messages", victim_id=victim_id) }}')
+        .then(response => response.json())
+        .then(messages => {
+            chatMessages.innerHTML = '';
+            
+            if (messages.length === 0) {
+                chatMessages.innerHTML = `
+                    <div class="text-center text-muted py-5">
+                        <i class="fas fa-comments fa-3x mb-3"></i>
+                        <p><strong>Start a conversation</strong></p>
+                        <p class="small">Send a message below to begin negotiation.</p>
+                    </div>
+                `;
+            } else {
+                messages.forEach(msg => {
+                    const isVictim = msg.sender === 'victim';
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = `message mb-3 ${isVictim ? 'text-end' : ''}`;
+                    messageDiv.innerHTML = `
+                        <div class="d-inline-block p-2 rounded ${isVictim ? 'bg-primary text-white' : 'bg-secondary text-white'}" style="max-width: 70%;">
+                            <small class="d-block fw-bold">
+                                ${isVictim ? '<i class="fas fa-user"></i> You' : '<i class="fas fa-user-secret"></i> Support'}
+                            </small>
+                            <div>${msg.message}</div>
+                            <small class="d-block text-white-50 mt-1" style="font-size: 0.7rem;">${msg.created_at}</small>
+                        </div>
+                    `;
+                    chatMessages.appendChild(messageDiv);
+                });
+            }
+            
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        });
+    }
+    
+    // Poll for new messages every 3 seconds
+    setInterval(loadMessages, 3000);
+});
+</script>
+{% endblock %}

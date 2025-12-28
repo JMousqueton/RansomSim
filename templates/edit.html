@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Post - RansomSim{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow">
+            <div class="card-header bg-dark text-white">
+                <h2 class="mb-0">
+                    <i class="fas fa-edit"></i> Edit Post
+                </h2>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST" action="{{ url_for('edit', post_id=post.id) }}" enctype="multipart/form-data">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="name" class="form-label">
+                                <i class="fas fa-tag"></i> Organization Name
+                            </label>
+                            <input type="text" class="form-control" id="name" name="name" required 
+                                   value="{{ post.name }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="language" class="form-label">
+                                <i class="fas fa-language"></i> Language
+                            </label>
+                            <select class="form-select" id="language" name="language" required>
+                                <option value="UK" {% if post.language == 'UK' %}selected{% endif %}>English (UK)</option>
+                                <option value="FR" {% if post.language == 'FR' %}selected{% endif %}>Français (FR)</option>
+                                <option value="DE" {% if post.language == 'DE' %}selected{% endif %}>Deutsch (DE)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="logo" class="form-label">
+                            <i class="fas fa-image"></i> Logo/Icon
+                        </label>
+                        {% if post.logo_path %}
+                        <div class="mb-2">
+                            <img src="{{ post.logo_path }}" alt="Current Logo" style="max-width: 150px; max-height: 150px;" class="border rounded p-2">
+                            <p class="text-muted small mb-0">Current logo (upload a new one to replace)</p>
+                        </div>
+                        {% endif %}
+                        <div class="input-group">
+                            <input type="file" class="form-control" id="logo" name="logo" 
+                                   accept="image/png,image/jpeg,image/gif,image/svg+xml">
+                            <span class="input-group-text" id="logoHint">PNG, JPG, GIF, SVG</span>
+                        </div>
+                        <small class="form-text text-muted">Optional. Max 16MB. Upload a new logo to replace the current one.</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description" class="form-label">
+                            <i class="fas fa-align-left"></i> Description/Message
+                        </label>
+                        <textarea class="form-control" id="description" name="description" rows="4">{{ post.description }}</textarea>
+                        <small class="form-text text-muted">Optional. Include details about the leak.</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="deadline_date" class="form-label">
+                            <i class="fas fa-hourglass-end"></i> Deadline (Countdown Timer)
+                        </label>
+                        <input type="datetime-local" class="form-control" id="deadline_date" name="deadline_date" 
+                               value="{{ post.deadline_date if post.deadline_date else '' }}">
+                        <small class="form-text text-muted">Optional. Set when the data will be released or payment deadline expires.</small>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="sector" class="form-label">
+                                <i class="fas fa-industry"></i> Business Sector
+                            </label>
+                            <select class="form-select" id="sector" name="sector">
+                                <option value="">Select a sector...</option>
+                                <option value="healthcare" {% if post.sector == 'healthcare' %}selected{% endif %}>Healthcare</option>
+                                <option value="finance" {% if post.sector == 'finance' %}selected{% endif %}>Finance</option>
+                                <option value="manufacturing" {% if post.sector == 'manufacturing' %}selected{% endif %}>Manufacturing</option>
+                                <option value="retail" {% if post.sector == 'retail' %}selected{% endif %}>Retail</option>
+                                <option value="technology" {% if post.sector == 'technology' %}selected{% endif %}>Technology</option>
+                                <option value="education" {% if post.sector == 'education' %}selected{% endif %}>Education</option>
+                                <option value="government" {% if post.sector == 'government' %}selected{% endif %}>Government</option>
+                                <option value="energy" {% if post.sector == 'energy' %}selected{% endif %}>Energy</option>
+                                <option value="telecommunications" {% if post.sector == 'telecommunications' %}selected{% endif %}>Telecommunications</option>
+                                <option value="transportation" {% if post.sector == 'transportation' %}selected{% endif %}>Transportation</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="ransom_amount" class="form-label">
+                                <i class="fas fa-dollar-sign"></i> Ransom Amount (USD)
+                            </label>
+                            <input type="text" class="form-control" id="ransom_amount" name="ransom_amount" 
+                                   placeholder="e.g., 500000" pattern="[0-9]*"
+                                   value="{{ post.ransom_amount if post.ransom_amount else '' }}">
+                            <small class="form-text text-muted">Optional. Numbers only.</small>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-warning">
+                        <i class="fas fa-info-circle"></i> <strong>Note:</strong> Documents and files cannot be edited. To change these, delete this post and create a new one.
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-between">
+                        <a href="{{ url_for('admin') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

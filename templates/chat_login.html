@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Secure Chat Access - RansomSim{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow border-danger">
+            <div class="card-header bg-danger text-white text-center">
+                <h2 class="mb-0">
+                    <i class="fas fa-lock"></i> Secure Chat Access
+                </h2>
+            </div>
+            <div class="card-body p-4">
+                <div class="alert alert-warning mb-4">
+                    <i class="fas fa-exclamation-triangle"></i> <strong>Victim Access Only</strong>
+                    <p class="mb-0 small mt-2">Enter the Victim ID provided in your ransom note to access the secure communication channel.</p>
+                </div>
+
+                <form method="POST" action="{{ url_for('chat_login') }}">
+                    <div class="mb-4">
+                        <label for="victim_id" class="form-label">
+                            <i class="fas fa-id-card"></i> Victim ID
+                        </label>
+                        <input type="text" class="form-control form-control-lg" id="victim_id" name="victim_id" 
+                               required autofocus placeholder="Enter your 16-character ID"
+                               pattern="[A-Za-z0-9]{16}" maxlength="16">
+                        <small class="form-text text-muted">Example: Bep7QBcC0ZtVMPWj</small>
+                    </div>
+
+                    <div class="d-grid mb-3">
+                        <button type="submit" class="btn btn-danger btn-lg">
+                            <i class="fas fa-sign-in-alt"></i> Access Chat
+                        </button>
+                    </div>
+                </form>
+
+                <hr>
+
+                <div class="alert alert-info mb-0">
+                    <i class="fas fa-info-circle"></i> <strong>Need Help?</strong>
+                    <p class="mb-0 small mt-2">Your Victim ID can be found in the ransom note file (RANSOM_NOTE_*.txt) left on your systems.</p>
+                </div>
+
+                <div class="text-center mt-3">
+                    <a href="{{ url_for('index') }}" class="btn btn-link">
+                        <i class="fas fa-arrow-left"></i> Back to Leak Site
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

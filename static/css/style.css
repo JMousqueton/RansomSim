@@ -1,0 +1,291 @@
+:root {
+    --primary-color: #dc3545;
+    --dark-color: #212529;
+    --light-color: #f8f9fa;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    background-color: #f5f5f5;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+main {
+    flex: 1;
+}
+
+/* Navbar Styling */
+.navbar {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #dc3545 !important;
+}
+
+.navbar-brand i {
+    margin-right: 8px;
+}
+
+/* Card Styling */
+.card {
+    border: none;
+    border-radius: 8px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15) !important;
+}
+
+.card-header {
+    border-radius: 8px 8px 0 0;
+    border: none;
+}
+
+/* Button Styling */
+.btn {
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+}
+
+.btn-danger:hover {
+    background-color: #bb2d3b;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(13, 110, 253, 0.3);
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(108, 117, 125, 0.3);
+}
+
+/* Form Styling */
+.form-label {
+    font-weight: 600;
+    color: #212529;
+    margin-bottom: 0.5rem;
+}
+
+.form-control,
+.form-select {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.form-control::placeholder {
+    color: #adb5bd;
+}
+
+.input-group-text {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+/* Badge Styling */
+.badge {
+    padding: 0.35rem 0.65rem;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.badge-danger {
+    background-color: #dc3545;
+}
+
+/* Code Styling */
+code {
+    background-color: #f8f9fa;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-family: 'Courier New', Courier, monospace;
+    color: #e83e8c;
+}
+
+pre {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 6px;
+    overflow-x: auto;
+}
+
+/* Table Styling */
+.table {
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.table thead {
+    background-color: #212529;
+    color: white;
+}
+
+.table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* Alert Styling */
+.alert {
+    border: none;
+    border-radius: 6px;
+    border-left: 4px solid;
+}
+
+.alert-info {
+    border-left-color: #0dcaf0;
+    background-color: #f8f9fa;
+}
+
+.alert-danger {
+    border-left-color: #dc3545;
+}
+
+.alert-success {
+    border-left-color: #198754;
+}
+
+/* Modal Styling */
+.modal-content {
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+    border: none;
+    background-color: #f8f9fa;
+}
+
+/* Footer Styling */
+footer {
+    border-top: 1px solid #ddd;
+}
+
+/* Page Transitions */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+main {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .navbar-brand {
+        font-size: 1.25rem;
+    }
+
+    .card {
+        margin-bottom: 1rem;
+    }
+
+    .btn-group,
+    .d-md-flex {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+}
+
+/* Utility Classes */
+.text-danger {
+    color: #dc3545 !important;
+}
+
+.text-muted {
+    color: #6c757d !important;
+}
+
+.bg-light {
+    background-color: #f8f9fa !important;
+}
+
+/* Loading Spinner */
+.spinner-border {
+    border-width: 0.3em;
+}
+
+/* Icon Styling */
+i {
+    margin-right: 0.5rem;
+}
+
+.icon-large {
+    font-size: 2rem;
+}
+
+/* Shadow Classes */
+.shadow-sm {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+}
+
+.shadow {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+.shadow-lg {
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}

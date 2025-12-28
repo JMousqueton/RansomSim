@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+
+{% block title %}Generate Post - RansomSim{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow">
+            <div class="card-header bg-dark text-white">
+                <h2 class="mb-0">
+                    <i class="fas fa-file-plus"></i> Generate New Post
+                </h2>
+            </div>
+            <div class="card-body p-4">
+                <form id="generateForm" enctype="multipart/form-data">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="name" class="form-label">
+                                <i class="fas fa-tag"></i> Organization Name
+                            </label>
+                            <input type="text" class="form-control" id="name" name="name" required 
+                                   placeholder="e.g., Acme Corporation">
+                            <small class="form-text text-muted">Enter the organization name</small>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="language" class="form-label">
+                                <i class="fas fa-language"></i> Language
+                            </label>
+                            <select class="form-select" id="language" name="language" required>
+                                <option value="UK">English (UK)</option>
+                                <option value="FR">Français (FR)</option>
+                                <option value="DE">Deutsch (DE)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="logo" class="form-label">
+                            <i class="fas fa-image"></i> Logo/Icon (Optional)
+                        </label>
+                        <div class="input-group">
+                            <input type="file" class="form-control" id="logo" name="logo" 
+                                   accept="image/png,image/jpeg,image/gif,image/svg+xml">
+                            <span class="input-group-text" id="logoHint">PNG, JPG, GIF, SVG</span>
+                        </div>
+                        <small class="form-text text-muted">Max 16MB. Supported: PNG, JPG, GIF, SVG</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="num_documents" class="form-label">
+                            <i class="fas fa-file"></i> Number of Documents to Generate
+                        </label>
+                        <div class="input-group">
+                            <input type="range" class="form-range" id="num_documents" name="num_documents" 
+                                   min="1" max="5" value="3">
+                            <input type="number" class="form-control" id="num_documents_display" 
+                                   min="1" max="5" value="3" style="width: 60px;">
+                        </div>
+                        <small class="form-text text-muted">Generate up to 5 fake documents (files and names)</small>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="sector" class="form-label">
+                                <i class="fas fa-industry"></i> Business Sector
+                            </label>
+                            <select class="form-select" id="sector" name="sector">
+                                <option value="">Select a sector...</option>
+                                <option value="healthcare">Healthcare</option>
+                                <option value="finance">Finance</option>
+                                <option value="manufacturing">Manufacturing</option>
+                                <option value="retail">Retail</option>
+                                <option value="technology">Technology</option>
+                                <option value="education">Education</option>
+                                <option value="government">Government</option>
+                                <option value="energy">Energy</option>
+                                <option value="telecommunications">Telecommunications</option>
+                                <option value="transportation">Transportation</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="ransom_amount" class="form-label">
+                                <i class="fas fa-dollar-sign"></i> Ransom Amount (USD)
+                            </label>
+                            <input type="text" class="form-control" id="ransom_amount" name="ransom_amount" 
+                                   placeholder="e.g., 500000" pattern="[0-9]*">
+                            <small class="form-text text-muted">Optional. Numbers only.</small>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description" class="form-label">
+                            <i class="fas fa-align-left"></i> Description/Message
+                        </label>
+                        <textarea class="form-control" id="description" name="description" rows="4" 
+                                  placeholder="Enter a description or message for the leaked data..."></textarea>
+                        <small class="form-text text-muted">Optional. Include details about the leak.</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="deadline_date" class="form-label">
+                            <i class="fas fa-hourglass-end"></i> Deadline (Countdown Timer)
+                        </label>
+                        <input type="datetime-local" class="form-control" id="deadline_date" name="deadline_date">
+                        <small class="form-text text-muted">Optional. Set when the data will be released or payment deadline expires. Leave empty for no countdown.</small>
+                    </div>
+
+                    <div class="card bg-light mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-info-circle"></i> Preview
+                            </h5>
+                            <div id="preview">
+                                <p class="text-muted">Generated files will appear here...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-between">
+                        <a href="{{ url_for('index') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Back
+                        </a>
+                        <button type="submit" class="btn btn-danger" id="submitBtn">
+                            <i class="fas fa-rocket"></i> Generate Post
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="loadingModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center py-4">
+                <div class="spinner-border text-danger mb-3" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mb-0">Generating post...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const numDocumentsSlider = document.getElementById('num_documents');
+    const numDocumentsDisplay = document.getElementById('num_documents_display');
+    const generateForm = document.getElementById('generateForm');
+    const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
+
+    // Sync slider and number input
+    numDocumentsSlider.addEventListener('change', function() {
+        numDocumentsDisplay.value = this.value;
+        updatePreview();
+    });
+
+    numDocumentsDisplay.addEventListener('change', function() {
+        if (this.value < 1) this.value = 1;
+        if (this.value > 5) this.value = 5;
+        numDocumentsSlider.value = this.value;
+        updatePreview();
+    });
+
+    function updatePreview() {
+        const language = document.getElementById('language').value;
+        const numDocs = parseInt(numDocumentsSlider.value);
+        const preview = document.getElementById('preview');
+        
+        let html = '<p><strong>Documents and files that will be generated:</strong></p><ul class="list-group list-group-sm">';
+        
+        for (let i = 0; i < numDocs; i++) {
+            html += '<li class="list-group-item"><i class="fas fa-file"></i> Document ' + (i + 1) + '</li>';
+            html += '<li class="list-group-item"><i class="fas fa-file-excel"></i> File ' + (i + 1) + ' (.xlsx, .docx, or .pdf)</li>';
+        }
+        
+        html += '</ul>';
+        preview.innerHTML = html;
+    }
+
+    generateForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        loadingModal.show();
+
+        const formData = new FormData(generateForm);
+
+        fetch('{{ url_for("generate") }}', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                return response.json().then(data => Promise.reject(data));
+            }
+        })
+        .then(data => {
+            if (data.success) {
+                setTimeout(() => {
+                    window.location.href = data.redirect;
+                }, 500);
+            } else {
+                loadingModal.hide();
+                alert('Error: ' + (data.error || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            loadingModal.hide();
+            alert('Error: ' + (error.error || 'Failed to generate post'));
+        });
+    });
+
+    // Initialize preview on page load
+    updatePreview();
+});
+</script>
+{% endblock %}
