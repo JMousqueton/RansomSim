@@ -163,6 +163,13 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
         }
 
+        .blur-preview {
+            width: 100%;
+            display: block;
+            filter: blur(3px) brightness(0.95);
+            transform: scale(1.01);
+        }
+
         .placeholder-image {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 350px;
@@ -413,6 +420,10 @@
                 font-size: 2.5rem;
             }
         }
+        .no-bullets {
+                list-style: none;
+                padding-left: 0;
+        }
     </style>
 </head>
 <body>
@@ -467,15 +478,9 @@
 
                     <!-- Featured Image -->
                     <div class="news-image">
-                        <div class="placeholder-image">
-                            <div class="image-content">
-                                <i class="fas fa-lock"></i>
-                                <p>{{ victim_name }}</p>
-                                <small style="opacity: 0.8;"><i class="fas fa-exclamation-triangle"></i> Data Breach</small>
-                            </div>
-                        </div>
+                        <img src="{{ url_for('get_screenshot', screenshot_type='database', language=language or 'UK') }}" alt="Database export screenshot" class="blur-preview">
                         <div class="image-credit">
-                            <i class="fas fa-info-circle"></i> Illustration: {{ victim_name }} affected by ransomware attack
+                            <i class="fas fa-info-circle"></i> Redacted proof sample: HR database export (lightly blurred)
                         </div>
                     </div>
 
@@ -488,7 +493,7 @@
                         <!-- Impact Box -->
                         <div class="alert-custom alert-warning-custom">
                             <h5>
-                                <i class="fas fa-exclamation-triangle"></i> Potential Impact
+                                <i class="fas fa-exclamation-triangle"></i> {{ impact_label or 'Potential Impact' }}
                             </h5>
                             <p>{{ impact }}</p>
                         </div>
@@ -508,13 +513,12 @@
                         <!-- Recommendation Box -->
                         <div class="alert-custom alert-info-custom">
                             <h5>
-                                <i class="fas fa-shield-alt"></i> Recommended Actions
+                                <i class="fas fa-shield-alt"></i> {{ recommendations_label or 'Recommended Actions' }}
                             </h5>
-                            <ul>
-                                <li><i class="fas fa-check-circle"></i> Engage with specialized incident response teams</li>
-                                <li><i class="fas fa-check-circle"></i> Assess the scope and nature of the data breach</li>
-                                <li><i class="fas fa-check-circle"></i> Notify affected stakeholders and regulatory bodies as required</li>
-                                <li><i class="fas fa-check-circle"></i> Document all communications and timelines</li>
+                            <ul class="no-bullets">
+                                {% for item in recommendations %}
+                                <li><i class="fas fa-check-circle"></i> {{ item }}</li>
+                                {% endfor %}
                             </ul>
                         </div>
 

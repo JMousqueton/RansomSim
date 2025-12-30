@@ -29,6 +29,9 @@ def generate_news_article(victim_id):
                 'Security Intelligence', 'Information Security Review',
                 'DarkWeb Monitor', 'Threat Alert Daily', 'Incident Response News'
             ],
+            'impact_label': 'Potential Impact',
+            'default_impact': 'Confidential business data exposure poses significant risks.',
+            'recommendations_label': 'Recommended Actions',
             'authors': [
                 'James Mitchell', 'Sarah Chen', 'Robert Davies', 'Emily Thompson',
                 'Michael Rodriguez', 'Lisa Anderson', 'David Kumar', 'Alexandra Smith'
@@ -45,6 +48,12 @@ def generate_news_article(victim_id):
                 'Telecommunications': 'Customer communication records compromised. Network security weaknesses exposed. Regulatory scrutiny expected.',
                 'Transportation': 'Logistics and routing information disclosed. Customer travel data at risk. Safety protocols compromised.'
             },
+            'recommendations': [
+                'Engage with specialized incident response teams',
+                'Assess the scope and nature of the data breach',
+                'Notify affected stakeholders and regulatory bodies as required',
+                'Document all communications and timelines'
+            ],
             'expert_quotes': [
                 ('Dr. Michael Chen, Chief Security Officer at Global Cyber Institute', 'This is a sophisticated attack targeting critical infrastructure. Organizations must act immediately to secure their systems and notify affected parties.'),
                 ('Lisa Rodriguez, Ransomware Threat Analyst', 'This group has demonstrated a pattern of aggressive escalation. Every hour of delay increases the risk of complete data publication.'),
@@ -71,6 +80,9 @@ def generate_news_article(victim_id):
                 'Intelligence en Sécurité', 'Revue de Sécurité Informatique',
                 'Moniteur DarkWeb', 'Alerte Quotidienne', 'Nouvelles en Réponse aux Incidents'
             ],
+            'impact_label': 'Impact Potentiel',
+            'default_impact': "L'exposition de données professionnelles confidentielles présente des risques importants.",
+            'recommendations_label': 'Actions Recommandées',
             'authors': [
                 'Jean Dubois', 'Marie Leclerc', 'Pierre Bernard', 'Sophie Moreau',
                 'Luc Rousseau', 'Anne Dupont', 'Thomas Martin', 'Isabelle Petit'
@@ -87,6 +99,12 @@ def generate_news_article(victim_id):
                 'Telecommunications': 'Dossiers de communication des clients compromis. Faiblesses de la sécurité réseau exposées. Scrutin réglementaire prévu.',
                 'Transportation': 'Informations logistiques et de routage divulguées. Données de voyage des clients à risque. Protocoles de sécurité compromis.'
             },
+            'recommendations': [
+                'Mobiliser des équipes spécialisées en réponse à incident',
+                'Évaluer l’ampleur et la nature de la violation de données',
+                'Avertir les parties prenantes et autorités réglementaires concernées',
+                'Documenter toutes les communications et chronologies'
+            ],
             'expert_quotes': [
                 ('Dr. Michel Chen, Directeur de la Sécurité chez Global Cyber Institute', "C'est une attaque sophistiquée ciblant les infrastructures critiques. Les organisations doivent agir immédiatement pour sécuriser leurs systèmes et notifier les parties touchées."),
                 ('Lisa Rodriguez, Analyste en Menaces Ransomware', "Ce groupe a démontré une tendance à l'escalade agressive. Chaque heure de retard augmente le risque de publication complète des données."),
@@ -113,6 +131,9 @@ def generate_news_article(victim_id):
                 'Sicherheitsintelligenz', 'Informationssicherheitsprüfung',
                 'DarkWeb-Monitor', 'Tägliche Bedrohungswarnung', 'Incident Response News'
             ],
+            'impact_label': 'Potenzielle Auswirkungen',
+            'default_impact': 'Die Offenlegung vertraulicher Unternehmensdaten birgt erhebliche Risiken.',
+            'recommendations_label': 'Empfohlene Maßnahmen',
             'authors': [
                 'Hans Mueller', 'Sophia Schmidt', 'Klaus Weber', 'Maria Braun',
                 'Friedrich Hoffmann', 'Gabriele Fischer', 'Wilhelm Schneider', 'Eva Wagner'
@@ -129,6 +150,12 @@ def generate_news_article(victim_id):
                 'Telecommunications': 'Kommunikationsdatensätze von Kunden sind kompromittiert. Netzwerksicherheitsschwächen sind exponiert. Behördliche Überprüfung wird erwartet.',
                 'Transportation': 'Logistik- und Routinginformationen sind offengelegt. Kundereisedaten sind gefährdet. Sicherheitsprotokolle sind kompromittiert.'
             },
+            'recommendations': [
+                'Spezialisierte Incident-Response-Teams einbinden',
+                'Umfang und Art des Datenvorfalls bewerten',
+                'Betroffene Parteien und Aufsichtsbehörden informieren',
+                'Alle Kommunikationen und Zeitpläne dokumentieren'
+            ],
             'expert_quotes': [
                 ('Dr. Michael Chen, Chief Security Officer bei Global Cyber Institute', 'Dies ist ein ausgefeilter Angriff auf kritische Infrastrukturen. Organisationen müssen sofort handeln, um ihre Systeme zu sichern und betroffene Parteien zu benachrichtigen.'),
                 ('Lisa Rodriguez, Ransomware-Bedrohungsanalystin', 'Diese Gruppe hat ein Muster aggressiver Eskalation demonstriert. Jede Stunde Verzögerung erhöht das Risiko der vollständigen Datenveröffentlichung.'),
@@ -159,7 +186,10 @@ def generate_news_article(victim_id):
     author = random.choice(translations['authors'])
     quote_author, quote_text = random.choice(translations['expert_quotes'])
 
-    impact = translations['impact_statements'].get(sector, 'Confidential business data exposure poses significant risks.')
+    impact = translations['impact_statements'].get(
+        sector,
+        translations.get('default_impact', 'Confidential business data exposure poses significant risks.')
+    )
 
     # Generate article content using lambda functions
     article_date = datetime.now().strftime(translations['date_format'])
@@ -236,6 +266,7 @@ def generate_news_article(victim_id):
     return {
         'victim_id': victim_id,
         'victim_name': victim_name,
+        'language': language,
         'publication': publication,
         'author': author,
         'date': article_date,
@@ -243,6 +274,14 @@ def generate_news_article(victim_id):
         'summary': summary,
         'body': body,
         'impact': impact,
+        'impact_label': translations.get('impact_label', 'Potential Impact'),
+        'recommendations_label': translations.get('recommendations_label', 'Recommended Actions'),
+        'recommendations': translations.get('recommendations', [
+            'Engage with specialized incident response teams',
+            'Assess the scope and nature of the data breach',
+            'Notify affected stakeholders and regulatory bodies as required',
+            'Document all communications and timelines'
+        ]),
         'quote': quote_text,
         'quote_author': quote_author,
         'quote_source': translations['source'],
